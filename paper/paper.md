@@ -138,6 +138,21 @@ Please keep sections to a maximum of only two levels.
 **Generation of map**
 
 **Pruning of relevant components**
+ 
+ - For the processing of networks, extraction of components, mapping of data and component filtering through an interactive user interface, a plugin for the MINERVA platform has been created
+ - The plugin can access information from the maps published on MINERVA, such as the map layout and data overlays
+ - The plugin enables a dynamic presentation of information, e.g. by highlighting elements and reactions on the map
+ - The extraction of network components, identification of of drug targets, as well as scripts for creating files ready for downstream analysis, however, requiring more complex processing workflows for which javascript is insufficient
+ -  for this purpose, a Flask Python server was set up which communicates with the plugin
+ - on loading the plugin a MINERVA, a session is created on the server by providing the project url, id and creation date, uniquely identifying the project
+ - if not yet processed on the server, the plugin fetches the source .zip file of the project, and reads all .xml files into a computational data structure of a graph G consisting of elements (nodes N(G)) and reactions (edges E(G))
+ - nodes are uniquely identified by their speciesalias defined by celldesigner, as well as the name of the map file
+ - edges are defined by a list of source nodes, a list of target nodes, the edge type, and a list of modifications
+ - for the extraction of components, the network is converted into a bipartite graph structure, extracting simple interactions of {u,r,v} with u,v ∈ N and r = {-1,1}
+ - For reactions with modifications, the nodes are connected to the modifiers and modifiers to the targets
+ - using a depth-first-search, connected subgraphs, further referred to components in this text, are identified. the DFS is performed undirected, i.e. all nodes that are in some way connected through edges are considered as a network component
+ - the components are accessed by the plugin, and on the frontend in the plugin mapped to MINERVA elements to fetch the hgnc symbol and entrez ID of all nodes and their subunits 
+
 
 ## Analysis
 
@@ -152,13 +167,9 @@ Please keep sections to a maximum of only two levels.
 -   Stochastic Boolean model simulation: The simulations of the specified biological models were conducted using probabilistic Boolean modelling. This framework provides a tool for simulation of biological systems through discrete/continuous time Markov processes. It operates by utilising a Monte Carlo algorithm that simulates the system's evolution over time based on the initial conditions of the biomolecules and the interactions between them.
 
 **PertFlow**
--  Probing for ground truths: Using Decoupler and pseudobulk analysis for distinct cell types, PertFlow enable the leveraging of active TFs and pathways preferentially perturbed in SLE compared to normal controls (e.g., RFX5, MEF2C, ELK4, Hypoxia, NFkb signalling) - these signaling components and patterns are corroborated by the pertinent literature
-- Cell type prioritization: Deploying AugurPy package, PertFlow detected that NK T cells, B cells and Basophils were the most affect cell groups due to the SLE perturbation
-- Drug Repurposing:   Using ASGARD package, PertFlow facilitated the repurposing of several compounds towards cell groups of interest (e.g., geldamycin that is under investigation for SLE was captured).
+
 **Network visualization**
-- Going beyond the current PertFlow architecture, a novel network model was created connecting genes to drugs to cell-types, creating an informative multi-partite graph that can be traversed and analyzed for deeper biological insights
-**Compatibility with Hipathia and boolean modelling**
-- The transformation of PertFlow results into a graph can enable a seamless integration with the modelling performed by Hipathia in terms of genes of interest, potential druggable targets and putative signaling cascades
+
 # Discussion
 
 # Concluding remarks
